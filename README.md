@@ -66,6 +66,20 @@ NetSentry/
 - Wireshark
 - Linux networking and command-line utilities
 
+## Screenshots
+
+### 1. Network Host Discovery
+![Nmap host discovery](screenshots/01-host-discovery.png)
+
+### 2. Full TCP Port Scan
+![Full TCP port scan](screenshots/02-full-tcp-scan.png)
+
+### 3. Wireshark Traffic Capture
+![Wireshark network traffic](screenshots/03-wireshark-traffic.png)
+
+### 4. Initial Assessment Report
+![Initial assessment report](screenshots/04-assessment-report.png)
+
 ## Security Scope
 
 All scanning and packet capture were performed against the author's own Ubuntu virtual machine on an isolated lab network. The assessment covered TCP ports and selected network traffic; it did not constitute a comprehensive vulnerability assessment.
