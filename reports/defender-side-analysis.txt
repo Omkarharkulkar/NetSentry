@@ -1,0 +1,84 @@
+==================================================
+       NETSENTRY DEFENDER-SIDE ANALYSIS
+==================================================
+
+Assessment date: 28 October 2026
+Scanner: Kali Linux (192.168.50.10)
+Target: Ubuntu 24.04.5 (192.168.50.20)
+Lab network: NetSentry-Lab (192.168.50.0/24)
+
+1. OBJECTIVE
+------------
+Compare the results of a controlled TCP SYN scan with
+packet-level evidence captured on the target machine.
+
+2. SCAN DETAILS
+---------------
+Tool: Nmap 7.94SVN
+Scan type: TCP SYN scan
+Port range: TCP 1-1000
+Target: 192.168.50.20
+
+3. RESULTS
+----------
+Host status: Up
+Ports scanned: 1000 TCP ports
+Open ports: 1
+Closed ports: 999
+Open service: TCP/22 (SSH)
+
+The Nmap result and the defender-side packet capture
+agree that TCP/22 was open during this assessment.
+
+4. DEFENDER-SIDE OBSERVATIONS
+-----------------------------
+The Ubuntu capture contains TCP SYN probes from
+192.168.50.10 to 192.168.50.20.
+
+Observed response patterns include:
+
+- SYN-ACK from TCP/22, indicating an open port.
+- RST-ACK responses from closed TCP ports.
+- A reset from the scanner after the SYN-ACK on
+  TCP/22, consistent with SYN-scan behaviour.
+
+The capture contains 2,001 packets and spans
+approximately 31.9 milliseconds.
+
+5. LOG REVIEW
+-------------
+The reviewed SSH service journal and authentication
+log output showed no corresponding SSH authentication
+event for this scan.
+
+This is expected because a TCP SYN scan does not
+normally proceed to SSH user authentication.
+
+The result does not establish that all scan activity
+is invisible to host logging or monitoring.
+
+6. FINDINGS AND RECOMMENDATIONS
+-------------------------------
+Finding 1: SSH is reachable on the lab interface.
+Evidence: Nmap report and target-side TCP capture.
+
+Finding 2: Closed ports returned TCP reset responses.
+Evidence: Target-side packet capture.
+
+Finding 3: Network evidence and authentication logs
+provide different views of activity.
+Evidence: TCP probes and responses were captured, while
+no corresponding SSH authentication event was observed.
+
+7. EVIDENCE FILES
+-----------------
+evidence/defender-tcp-scan.txt
+evidence/defender-scan-capture.pcap
+reports/defender-side-analysis.txt
+
+Capture SHA-256:
+3840edec0113f107dcd0ceba1de50c3542eaecaa1ab66e98675f5cbe173e902b
+
+==================================================
+END OF ANALYSIS
+==================================================

@@ -1,0 +1,9 @@
+# Nmap 7.94SVN scan initiated Wed Oct 28 16:24:07 2026 as: nmap -sS -Pn -n -p 1-1000 --reason -oN /home/omkali/NetSentry/evidence/defender-tcp-scan.txt 192.168.50.20
+Nmap scan report for 192.168.50.20
+Host is up, received arp-response (0.00013s latency).
+Not shown: 999 closed tcp ports (reset)
+PORT   STATE SERVICE REASON
+22/tcp open  ssh     syn-ack ttl 64
+MAC Address: 08:00:27:DA:7E:B3 (Oracle VirtualBox virtual NIC)
+
+# Nmap done at Wed Oct 28 16:24:07 2026 -- 1 IP address (1 host up) scanned in 0.21 seconds
