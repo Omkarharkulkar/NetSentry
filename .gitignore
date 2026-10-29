@@ -1,0 +1,10 @@
+# Generated assessment runs are kept locally
+reports/runs/
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Temporary files
+*.tmp
+*.swp

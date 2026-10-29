@@ -1,0 +1,46 @@
+==================================================
+          NETSENTRY NETWORK ASSESSMENT
+==================================================
+Date:       2026-10-28T17:48:41+05:30
+Scanner:    kali
+Target:     192.168.50.20
+Scope:      TCP ports 1-1000
+Scan type:  TCP connect scan
+
+----- REACHABILITY CHECK -----
+PING 192.168.50.20 (192.168.50.20) 56(84) bytes of data.
+64 bytes from 192.168.50.20: icmp_seq=1 ttl=64 time=2.48 ms
+64 bytes from 192.168.50.20: icmp_seq=2 ttl=64 time=0.364 ms
+
+--- 192.168.50.20 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1002ms
+rtt min/avg/max/mdev = 0.364/1.420/2.477/1.056 ms
+Ping result: Replies received.
+
+----- TCP PORT SCAN -----
+Starting Nmap scan at 2026-10-28T17:48:42+05:30
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2026-10-28 17:48 IST
+Nmap scan report for 192.168.50.20
+Host is up, received user-set (0.00045s latency).
+Not shown: 999 closed tcp ports (conn-refused)
+PORT   STATE SERVICE REASON
+22/tcp open  ssh     syn-ack
+
+Nmap done: 1 IP address (1 host up) scanned in 0.08 seconds
+Scan status: Completed.
+
+----- SCAN OUTPUT -----
+# Nmap 7.94SVN scan initiated Wed Oct 28 17:48:42 2026 as: nmap -sT -Pn -n -p 1-1000 --reason -oN reports/runs/20261028_174841_192_168_50_20/tcp-scan.txt 192.168.50.20
+Nmap scan report for 192.168.50.20
+Host is up, received user-set (0.00045s latency).
+Not shown: 999 closed tcp ports (conn-refused)
+PORT   STATE SERVICE REASON
+22/tcp open  ssh     syn-ack
+
+# Nmap done at Wed Oct 28 17:48:42 2026 -- 1 IP address (1 host up) scanned in 0.08 seconds
+
+----- EVIDENCE CHECKSUM -----
+0994f366ddd2e022410bbda7287da9d6204c73eb1b83f8a3baab2ecf3c80ae31  reports/runs/20261028_174841_192_168_50_20/tcp-scan.txt
+
+Report directory: reports/runs/20261028_174841_192_168_50_20
+==================================================

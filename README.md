@@ -47,6 +47,41 @@ Both VMs also have a separate NAT interface for internet connectivity. The inter
 9. Review SSH and authentication logs for relevant events.
 10. Document findings, evidence, limitations, and recommendations.
 
+## Repeatable Network Assessment
+
+NetSentry includes a Bash script to make basic network checks easier to repeat. It checks target reachability, scans TCP ports 1–1000, and saves the results in a timestamped directory.
+
+### Run the assessment
+
+From the Kali VM:
+
+```bash
+./scripts/network_assessment.sh 192.168.50.20
+```
+
+The target must be a valid host address in the isolated NetSentry lab subnet (`192.168.50.0/24`). The script rejects malformed addresses, out-of-scope targets, and the scanner's own IP address.
+
+### Generated evidence
+
+Each run creates a separate directory under `reports/runs/`, containing:
+
+- `assessment-summary.txt` — reachability results, scan output, and evidence checksum.
+- `tcp-scan.txt` — the Nmap output for TCP ports 1–1000.
+
+The script uses a TCP connect scan. A failed ping does not automatically stop the TCP scan, since ICMP responses may be blocked while TCP services remain reachable.
+
+### Run the tests
+
+```bash
+./tests/test_network_assessment.sh
+```
+
+The tests check Bash syntax and verify that invalid, out-of-scope, and scanner-self targets are rejected.
+
+### Scope and limitations
+
+This script performs a limited TCP assessment, not a full vulnerability assessment. It does not scan UDP ports, establish that a service is vulnerable, or determine whether observed activity is malicious. Results reflect the target's state at the time of the scan.
+
 ## Key Results
 
 - Discovered two active hosts on the lab subnet.
@@ -107,19 +142,29 @@ These are observations from a controlled lab exercise, not proof of malicious ac
 ```text
 NetSentry/
 ├── evidence/
-│   ├── ssh-service-scan.txt
 │   ├── full-tcp-scan.txt
+│   ├── ssh-service-scan.txt
 │   ├── netsentry-lab-traffic.pcapng
 │   ├── defender-tcp-scan.txt
 │   └── defender-scan-capture.pcap
 ├── reports/
 │   ├── initial-assessment-report.txt
-│   └── defender-side-analysis.txt
+│   ├── defender-side-analysis.txt
+│   ├── sample-run/
+│   │   ├── assessment-summary.txt
+│   │   └── tcp-scan.txt
+│   └── runs/                  # Generated locally; ignored by Git
+├── scripts/
+│   └── network_assessment.sh
+├── tests/
+│   └── test_network_assessment.sh
 ├── screenshots/
 │   ├── 01-host-discovery.png
 │   ├── 02-full-tcp-scan.png
 │   ├── 03-wireshark-traffic.png
-│   └── 04-assessment-report.png
+│   ├── 04-assessment-report.png
+│   └── 05-defender-side-analysis.png
+├── .gitignore
 └── README.md
 ```
 
