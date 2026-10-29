@@ -135,7 +135,15 @@ The absence of an authentication event in the reviewed output does not mean that
 
 **Recommendation:** Correlate network and host evidence when investigating scanning or connection activity.
 
-These are observations from a controlled lab exercise, not proof of malicious activity or a confirmed vulnerability.
+### Finding 4: The repeatable assessment identified one open TCP port in the scanned range
+
+**Evidence:** The October 29, 2026 assessment of 192.168.50.20 reported TCP/22 open and 999 other TCP ports closed across ports 1–1000. The saved scan output and its SHA-256 checksum are available in the generated assessment report.
+
+**Interpretation:** SSH was reachable during this assessment. The result does not establish whether the service is vulnerable, whether its configuration is secure, or what services may exist outside the scanned range.
+
+**Recommendation:** Review the SSH configuration and access requirements on the Ubuntu target. If further assessment is needed, document the scope and compare results before and after any controlled configuration change.
+
+These are observations from controlled lab exercises, not proof of malicious activity or a confirmed vulnerability.
 
 ## Repository Structure
 
@@ -212,12 +220,11 @@ NetSentry/
 
 ## Future Improvements
 
-- Add a repeatable assessment script with timestamps and error handling.
-- Review SSH configuration and apply a documented, controlled hardening change.
-- Compare before-and-after scan results.
-- Add a structured findings table with evidence, impact, and remediation.
-- Improve screenshots to include the defender-side packet analysis.
+- Review SSH configuration and document a controlled hardening change.
+- Compare assessment results before and after the hardening change.
+- Add a structured assessment report with severity, evidence, impact, and remediation.
 - Explore additional authorized network troubleshooting scenarios.
+- Document the assessment script's failure-handling tests and their results.
 
 ## Disclaimer
 
