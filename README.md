@@ -109,9 +109,9 @@ Nmap reported one open port, TCP/22, and 999 closed ports. The packet capture co
 | SYN-ACK from TCP/22 | Indicates that the SSH port was accepting TCP connection requests |
 | RST-ACK responses from closed ports | Indicates that the target rejected connection attempts on those ports |
 | Reset from Kali after the SYN-ACK | Consistent with SYN-scan behaviour rather than a completed TCP connection |
-| No corresponding SSH authentication event observed in the reviewed logs | Expected for a scan that did not proceed to SSH user authentication |
+| SSH authentication events | Failed and successful password-authentication events were recorded; they cannot be conclusively attributed to the SYN scan |
 
-This exercise demonstrates that network activity may be visible in packet captures without producing a corresponding SSH authentication event.
+The packet capture and authentication logs provide different views of activity. The reviewed logs contain SSH authentication events, but the available evidence does not establish that those events were caused by the recorded SYN scan.
 
 The absence of an authentication event in the reviewed output does not mean that the activity was invisible to every host or network monitoring mechanism.
 

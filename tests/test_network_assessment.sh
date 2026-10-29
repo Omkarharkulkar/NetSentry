@@ -5,6 +5,12 @@
 
 set -u
 
+REAL_SHA256SUM="$(command -v sha256sum)" || {
+    echo "[FAIL] sha256sum is required for this test suite" >&2
+    exit 1
+}
+export REAL_SHA256SUM
+
 SCRIPT="$(cd "$(dirname "$0")/.." && pwd)/scripts/network_assessment.sh"
 PASSED=0
 FAILED=0
@@ -89,7 +95,7 @@ if [[ "${MOCK_SHA256SUM_MODE:-success}" == "fail" ]]; then
     exit 9
 fi
 
-exec /usr/bin/sha256sum "$@"
+exec "$REAL_SHA256SUM" "$@"
 MOCK_SHA256
 
 chmod +x "$MOCK_BIN/ping" "$MOCK_BIN/nmap" "$MOCK_BIN/sha256sum"

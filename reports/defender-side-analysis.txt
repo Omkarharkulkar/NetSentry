@@ -9,15 +9,24 @@ Lab network: NetSentry-Lab (192.168.50.0/24)
 
 1. OBJECTIVE
 ------------
-Compare the results of a controlled TCP SYN scan with
-packet-level evidence captured on the target machine.
+Compare a controlled TCP SYN scan with packet-level
+evidence collected on the target machine, then review
+available SSH and authentication logs.
 
 2. SCAN DETAILS
 ---------------
 Tool: Nmap 7.94SVN
-Scan type: TCP SYN scan
+Scan type: TCP SYN scan (-sS)
 Port range: TCP 1-1000
 Target: 192.168.50.20
+
+A SYN scan sends an initial TCP SYN probe and uses the
+response to classify a port. It normally does not
+complete the TCP handshake.
+
+The repeatable assessment script uses a TCP connect
+scan (-sT), which asks the operating system to establish
+a full TCP connection. These are separate assessments.
 
 3. RESULTS
 ----------
@@ -27,8 +36,8 @@ Open ports: 1
 Closed ports: 999
 Open service: TCP/22 (SSH)
 
-The Nmap result and the defender-side packet capture
-agree that TCP/22 was open during this assessment.
+Nmap results and the target-side capture agree that
+TCP/22 was open during this assessment.
 
 4. DEFENDER-SIDE OBSERVATIONS
 -----------------------------
@@ -45,36 +54,66 @@ Observed response patterns include:
 The capture contains 2,001 packets and spans
 approximately 31.9 milliseconds.
 
-5. LOG REVIEW
--------------
-The reviewed SSH service journal and authentication
-log output showed no corresponding SSH authentication
-event for this scan.
+5. AUTHENTICATION LOG REVIEW
+----------------------------
+The saved authentication evidence covers
+28-29 October 2026.
 
-This is expected because a TCP SYN scan does not
-normally proceed to SSH user authentication.
+Relevant files:
+- evidence/auth-log-review.txt
+- evidence/auth-log-events.txt
 
-The result does not establish that all scan activity
-is invisible to host logging or monitoring.
+The logs include failed and successful password
+authentication events from 192.168.50.10 on
+28 October, as well as pre-authentication connection
+closures and a successful password login from that
+address on 29 October.
+
+The reviewed events are not, by themselves, proof of
+malicious activity. The available timestamps do not
+establish that these authentication events were caused
+by the 28 October SYN scan.
+
+A SYN scan normally does not proceed to SSH user
+authentication. Network packet evidence and
+authentication logs therefore need to be interpreted
+in the context of the specific test and its timing.
 
 6. FINDINGS AND RECOMMENDATIONS
 -------------------------------
-Finding 1: SSH is reachable on the lab interface.
-Evidence: Nmap report and target-side TCP capture.
 
-Finding 2: Closed ports returned TCP reset responses.
+Finding 1 — Informational: SSH is reachable.
+Evidence: Nmap report and target-side packet capture.
+Interpretation: TCP/22 was reachable from the scanner.
+This result alone does not establish a vulnerability.
+Recommendation: Keep SSH enabled only where required
+and restrict access to trusted sources where practical.
+
+Finding 2 — Informational: Closed ports returned resets.
 Evidence: Target-side packet capture.
+Interpretation: The target rejected connection probes
+to the ports classified as closed. This is an observed
+TCP response, not a vulnerability by itself.
+Recommendation: Compare remote scan results with local
+listening sockets and firewall rules.
 
-Finding 3: Network evidence and authentication logs
-provide different views of activity.
-Evidence: TCP probes and responses were captured, while
-no corresponding SSH authentication event was observed.
+Finding 3 — Informational: Network and authentication
+logs show different aspects of activity.
+Evidence: Packet capture, evidence/auth-log-review.txt,
+and evidence/auth-log-events.txt.
+Interpretation: The logs contain authentication and
+pre-authentication events from the lab scanner. The
+available evidence does not establish that these events
+were caused by the recorded SYN scan.
+Recommendation: Correlate timestamps and test steps
+before attributing host events to a network scan.
 
 7. EVIDENCE FILES
 -----------------
 evidence/defender-tcp-scan.txt
 evidence/defender-scan-capture.pcap
-reports/defender-side-analysis.txt
+evidence/auth-log-review.txt
+evidence/auth-log-events.txt
 
 Capture SHA-256:
 3840edec0113f107dcd0ceba1de50c3542eaecaa1ab66e98675f5cbe173e902b
