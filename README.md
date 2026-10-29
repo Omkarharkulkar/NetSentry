@@ -2,23 +2,23 @@
 
 ## Project Overview
 
-NetSentry is a hands-on network discovery and security assessment lab built with Kali Linux and Ubuntu virtual machines. The project focuses on identifying active hosts, examining TCP ports and services, capturing network traffic, and documenting security observations.
+NetSentry is a hands-on network discovery and security assessment project built using Kali Linux and Ubuntu virtual machines. I created this lab to practise identifying active hosts, checking TCP ports and services, capturing network traffic, and documenting security-related observations.
 
-The lab also compares scanner-side results with packet-level evidence collected on the target machine. This helps explain how network scanning appears from both sides and why packet captures and authentication logs can provide different information.
+One of the main goals of the project is to understand how network scanning looks from both the scanner's and the target's perspective. By comparing Nmap results with packet captures and authentication logs collected on the Ubuntu machine, I explored how different sources of evidence help explain network activity.
 
-All testing is performed in an isolated VirtualBox lab network.
+The entire lab runs on an isolated VirtualBox internal network, allowing me to perform controlled security assessments in an environment I manage.
 
 ## Objectives
 
 - Discover active hosts on a private lab subnet.
 - Identify open and closed TCP ports.
 - Perform service and version detection using Nmap.
-- Capture and inspect network traffic using Wireshark and tcpdump.
-- Compare remote scan results with defender-side packet evidence.
+- Capture and analyse network traffic using Wireshark and tcpdump.
+- Compare remote scan results with packet-level evidence collected on the target.
 - Review relevant service and authentication logs.
-- Document findings, limitations, and practical recommendations.
+- Document findings, limitations, and practical security recommendations.
 
-## Lab Architecture
+## Lab Setup
 
 | Component | Configuration |
 |---|---|
@@ -32,43 +32,45 @@ All testing is performed in an isolated VirtualBox lab network.
 | Packet analysis | Wireshark and tcpdump |
 | Capture analysis | TShark |
 
-Both VMs also have a separate NAT interface for internet connectivity. The internal network is used for NetSentry lab traffic.
+Both virtual machines also have separate NAT adapters for internet connectivity. NetSentry assessment traffic is generated over the isolated internal network.
 
 ## Assessment Workflow
 
-1. Configure isolated connectivity between Kali and Ubuntu.
+I followed a step-by-step workflow to keep the assessment organised and make the results easier to verify.
+
+1. Set up isolated network connectivity between Kali and Ubuntu.
 2. Discover active hosts on the lab subnet.
 3. Scan all TCP ports on the target and identify exposed services.
 4. Generate selected ICMP and SSH traffic for packet inspection.
-5. Capture and inspect network traffic.
+5. Capture and analyse the resulting network traffic.
 6. Run a controlled TCP SYN scan against ports 1–1000.
-7. Capture the same scan from the Ubuntu target.
-8. Compare Nmap results with packet-level responses.
+7. Capture the same scan from the Ubuntu target's perspective.
+8. Compare Nmap findings with the packet-level responses.
 9. Review SSH and authentication logs for relevant events.
-10. Document findings, evidence, limitations, and recommendations.
+10. Document the findings, supporting evidence, limitations, and recommendations.
 
 ## Repeatable Network Assessment
 
-NetSentry includes a Bash script to make basic network checks easier to repeat. It checks target reachability, scans TCP ports 1–1000, and saves the results in a timestamped directory.
+To make the basic network checks easier to repeat, I added a Bash script that checks target reachability, scans TCP ports 1–1000, and saves the results in a timestamped directory.
 
 ### Run the assessment
 
-From the Kali VM:
+From the Kali VM, run:
 
 ```bash
 ./scripts/network_assessment.sh 192.168.50.20
 ```
 
-The target must be a valid host address in the isolated NetSentry lab subnet (`192.168.50.0/24`). The script rejects malformed addresses, out-of-scope targets, and the scanner's own IP address.
+The script accepts only valid host addresses within the isolated NetSentry lab subnet (`192.168.50.0/24`). It rejects malformed IP addresses, targets outside the permitted subnet, and the scanner's own IP address.
 
 ### Generated evidence
 
-Each run creates a separate directory under `reports/runs/`, containing:
+Each run creates a separate directory under `reports/runs/` containing:
 
-- `assessment-summary.txt` — reachability results, scan output, and evidence checksum.
-- `tcp-scan.txt` — the Nmap output for TCP ports 1–1000.
+- `assessment-summary.txt` — reachability results, scan output, and an evidence checksum.
+- `tcp-scan.txt` — Nmap results for TCP ports 1–1000.
 
-The script uses a TCP connect scan. A failed ping does not automatically stop the TCP scan, since ICMP responses may be blocked while TCP services remain reachable.
+The script uses a TCP connect scan. A failed ping does not automatically stop the TCP scan because ICMP responses can be blocked even when TCP services are reachable.
 
 ### Run the tests
 
@@ -76,44 +78,50 @@ The script uses a TCP connect scan. A failed ping does not automatically stop th
 ./tests/test_network_assessment.sh
 ```
 
-The tests check Bash syntax and verify that invalid, out-of-scope, and scanner-self targets are rejected.
+The test suite checks Bash syntax and verifies that invalid IP addresses, out-of-scope targets, and the scanner's own IP address are rejected.
 
 ### Scope and limitations
 
-This script performs a limited TCP assessment, not a full vulnerability assessment. It does not scan UDP ports, establish that a service is vulnerable, or determine whether observed activity is malicious. Results reflect the target's state at the time of the scan.
+This script provides a repeatable, limited TCP assessment rather than a complete vulnerability assessment. It does not scan UDP ports, confirm whether a service is vulnerable, or determine whether observed activity is malicious.
+
+The results represent the target's state at the time of the scan and may differ if its configuration or network conditions change.
 
 ## Key Results
 
-- Discovered two active hosts on the lab subnet.
-- Scanned all 65,535 TCP ports on the Ubuntu target during the initial assessment.
-- Identified SSH on TCP port 22.
-- Observed the reported service version: OpenSSH 9.6p1 Ubuntu 3ubuntu13.20.
-- Found no other open TCP ports during the initial full-port scan.
-- Captured ICMP and SSH-related traffic for analysis.
-- Captured a controlled TCP SYN scan from the target's perspective.
-- Confirmed that the defender-side capture showed SYN probes, SYN-ACK responses for TCP/22, and reset responses for closed ports.
-- Compared the network evidence with the reviewed SSH and authentication logs.
-- Produced initial and defender-side assessment reports.
+During the lab exercises, I was able to:
 
-These results describe the lab at the time of testing. They do not establish that the target is free of vulnerabilities.
+- Discover two active hosts on the lab subnet.
+- Scan all 65,535 TCP ports on the Ubuntu target during the initial assessment.
+- Identify SSH running on TCP port 22.
+- Observe the reported service version: OpenSSH 9.6p1 Ubuntu 3ubuntu13.20.
+- Find no other open TCP ports during the initial full-port scan.
+- Capture ICMP and SSH-related traffic for further analysis.
+- Capture a controlled TCP SYN scan from the target's perspective.
+- Confirm that the defender-side capture showed SYN probes, SYN-ACK responses for TCP/22, and reset responses for closed ports.
+- Compare network evidence with the SSH and authentication logs reviewed during the exercise.
+- Produce initial assessment and defender-side analysis reports.
+
+These results reflect the lab at the time of testing. They do not prove that the Ubuntu machine is free from vulnerabilities.
 
 ## Defender-Side Analysis
 
-The defender-side exercise used Kali (`192.168.50.10`) to scan Ubuntu (`192.168.50.20`) across TCP ports 1–1000.
+For this exercise, I used Kali (`192.168.50.10`) to scan the Ubuntu target (`192.168.50.20`) across TCP ports 1–1000. I then captured the corresponding traffic on the Ubuntu machine to compare what the scanner reported with what the target received and sent.
 
 Nmap reported one open port, TCP/22, and 999 closed ports. The packet capture collected on Ubuntu independently showed the corresponding TCP probe and response patterns.
 
-| Observation | Interpretation |
+| Observation | What it tells us |
 |---|---|
-| TCP SYN probes from Kali | Consistent with the controlled Nmap SYN scan |
-| SYN-ACK from TCP/22 | Indicates that the SSH port was accepting TCP connection requests |
-| RST-ACK responses from closed ports | Indicates that the target rejected connection attempts on those ports |
-| Reset from Kali after the SYN-ACK | Consistent with SYN-scan behaviour rather than a completed TCP connection |
-| SSH authentication events | Failed and successful password-authentication events were recorded; they cannot be conclusively attributed to the SYN scan |
+| TCP SYN probes from Kali | Consistent with the controlled Nmap SYN scan. |
+| SYN-ACK from TCP/22 | Indicates that the SSH port was accepting TCP connection requests. |
+| RST-ACK responses from closed ports | Indicates that the target rejected connection attempts on those ports. |
+| Reset from Kali after the SYN-ACK | Consistent with SYN-scan behaviour rather than a completed TCP connection. |
+| SSH authentication events | Failed and successful password-authentication events were recorded, but they cannot be conclusively attributed to the SYN scan. |
 
-The packet capture and authentication logs provide different views of activity. The reviewed logs contain SSH authentication events, but the available evidence does not establish that those events were caused by the recorded SYN scan.
+An important takeaway from this exercise is that packet captures and authentication logs show different parts of network activity. A packet capture can reveal connection probes and responses, while authentication logs can record attempts to authenticate to a service.
 
-The absence of an authentication event in the reviewed output does not mean that the activity was invisible to every host or network monitoring mechanism.
+The reviewed logs contained SSH authentication events, but the available evidence did not establish that those events were caused by the recorded SYN scan.
+
+Similarly, not finding a corresponding authentication event in the reviewed log output does not mean the activity was invisible to every host or network monitoring mechanism.
 
 ## Findings and Recommendations
 
@@ -125,7 +133,7 @@ The absence of an authentication event in the reviewed output does not mean that
 
 ### Finding 2: Closed ports returned TCP reset responses
 
-**Evidence:** The target-side packet capture.
+**Evidence:** The packet capture collected on the Ubuntu target.
 
 **Recommendation:** Compare remote scan results with local listening sockets and applicable firewall rules to understand which services are actually exposed.
 
@@ -133,17 +141,17 @@ The absence of an authentication event in the reviewed output does not mean that
 
 **Evidence:** TCP probes and responses were captured, while no corresponding SSH authentication event was observed in the reviewed logs.
 
-**Recommendation:** Correlate network and host evidence when investigating scanning or connection activity.
+**Recommendation:** Correlate network and host evidence when investigating scanning or connection activity. Review the relevant log sources and time ranges before drawing conclusions.
 
 ### Finding 4: The repeatable assessment identified one open TCP port in the scanned range
 
-**Evidence:** The October 29, 2026 assessment of 192.168.50.20 reported TCP/22 open and 999 other TCP ports closed across ports 1–1000. The saved scan output and its SHA-256 checksum are available in the generated assessment report.
+**Evidence:** The October 29, 2026 assessment of `192.168.50.20` reported TCP/22 open and 999 other TCP ports closed across ports 1–1000. The saved scan output and its SHA-256 checksum are available in the generated assessment report.
 
-**Interpretation:** SSH was reachable during this assessment. The result does not establish whether the service is vulnerable, whether its configuration is secure, or what services may exist outside the scanned range.
+**Interpretation:** SSH was reachable during this assessment. These results do not establish whether the service is vulnerable, whether its configuration is secure, or what services may exist outside the scanned range.
 
-**Recommendation:** Review the SSH configuration and access requirements on the Ubuntu target. If further assessment is needed, document the scope and compare results before and after any controlled configuration change.
+**Recommendation:** Review the SSH configuration and access requirements on the Ubuntu target. If further assessment is needed, document the scope and compare the results before and after any controlled configuration change.
 
-These are observations from controlled lab exercises, not proof of malicious activity or a confirmed vulnerability.
+These findings come from controlled lab exercises. They are observations to investigate and learn from, not proof of malicious activity or a confirmed vulnerability.
 
 ## Repository Structure
 
@@ -185,9 +193,12 @@ NetSentry/
 - Wireshark
 - TShark
 - tcpdump
+- Bash scripting
 - Linux networking and command-line utilities
 
 ## Screenshots
+
+The following screenshots document the main stages of the assessment and provide a visual reference for the results.
 
 ### 1. Network Host Discovery
 
@@ -211,21 +222,22 @@ NetSentry/
 
 ## Limitations
 
+While this project covers several practical network assessment tasks, there are some important limitations:
+
 - The initial assessment covered TCP ports; UDP was not comprehensively assessed.
 - The defender-side scan covered TCP ports 1–1000, not every possible port.
 - Service version information does not, by itself, prove a vulnerability.
-- A port scan does not establish malicious intent.
+- A port scan cannot establish malicious intent on its own.
 - Authentication-log observations are limited to the logs and time ranges reviewed.
 - The lab does not implement a complete SIEM, alerting, or incident-response pipeline.
 
 ## Future Improvements
 
-- Review SSH configuration and document a controlled hardening change.
+There are several areas I plan to explore to build on the current lab:
+
+- Review the SSH configuration and document a controlled hardening change.
 - Compare assessment results before and after the hardening change.
-- Add a structured assessment report with severity, evidence, impact, and remediation.
-- Explore additional authorized network troubleshooting scenarios.
+- Add a structured assessment report covering severity, evidence, impact, and remediation.
+- Explore additional authorised network troubleshooting scenarios.
 - Document the assessment script's failure-handling tests and their results.
 
-## Disclaimer
-
-This project is intended for education and authorized security testing. Only scan systems for which you have permission. All current testing is conducted against the author's own virtual machines in an isolated lab network.
