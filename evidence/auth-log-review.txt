@@ -1,0 +1,52 @@
+NetSentry - SSH Authentication Log Review
+Host: omkarvm
+Collection time: 2026-10-29T16:51:47+05:30
+Review window: 2026-10-28 through 2026-10-29
+
+========== SSH JOURNAL ==========
+Oct 28 15:03:55 omkarvm systemd[1]: Starting ssh.service - OpenBSD Secure Shell server...
+Oct 28 15:03:56 omkarvm sshd[1148]: Server listening on 0.0.0.0 port 22.
+Oct 28 15:03:56 omkarvm sshd[1148]: Server listening on :: port 22.
+Oct 28 15:03:56 omkarvm systemd[1]: Started ssh.service - OpenBSD Secure Shell server.
+-- Boot 0744268d77ba44f3b7e6af81caf664aa --
+Oct 28 16:05:34 omkarvm systemd[1]: Starting ssh.service - OpenBSD Secure Shell server...
+Oct 28 16:05:34 omkarvm sshd[1095]: Server listening on 0.0.0.0 port 22.
+Oct 28 16:05:34 omkarvm sshd[1095]: Server listening on :: port 22.
+Oct 28 16:05:34 omkarvm systemd[1]: Started ssh.service - OpenBSD Secure Shell server.
+Oct 28 16:34:15 omkarvm sshd[4468]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.50.10  user=omkarubuntu
+Oct 28 16:34:17 omkarvm sshd[4468]: Failed password for omkarubuntu from 192.168.50.10 port 54830 ssh2
+Oct 28 16:34:26 omkarvm sshd[4468]: Accepted password for omkarubuntu from 192.168.50.10 port 54830 ssh2
+Oct 28 16:34:26 omkarvm sshd[4468]: pam_unix(sshd:session): session opened for user omkarubuntu(uid=1000) by omkarubuntu(uid=0)
+Oct 28 16:34:27 omkarvm sshd[4468]: pam_unix(sshd:session): session closed for user omkarubuntu
+-- Boot 5acdfa4fb0a7446bbfd9299faa2ffd7c --
+Oct 29 15:14:16 omkarvm systemd[1]: Starting ssh.service - OpenBSD Secure Shell server...
+Oct 29 15:14:16 omkarvm sshd[1153]: Server listening on 0.0.0.0 port 22.
+Oct 29 15:14:16 omkarvm systemd[1]: Started ssh.service - OpenBSD Secure Shell server.
+Oct 29 15:14:16 omkarvm sshd[1153]: Server listening on :: port 22.
+Oct 29 16:12:07 omkarvm sshd[4775]: Connection closed by authenticating user omkarubuntu 192.168.50.10 port 52468 [preauth]
+Oct 29 16:12:07 omkarvm sshd[4777]: Connection closed by authenticating user omkarubuntu 192.168.50.10 port 52474 [preauth]
+Oct 29 16:12:17 omkarvm sshd[4779]: Accepted password for omkarubuntu from 192.168.50.10 port 52484 ssh2
+Oct 29 16:12:17 omkarvm sshd[4779]: pam_unix(sshd:session): session opened for user omkarubuntu(uid=1000) by omkarubuntu(uid=0)
+Oct 29 16:12:18 omkarvm sshd[4779]: pam_unix(sshd:session): session closed for user omkarubuntu
+Oct 29 16:12:50 omkarvm sshd[4862]: Accepted publickey for omkarubuntu from 192.168.50.10 port 54812 ssh2: ED25519 SHA256:iGGHBW/YI1gVGu+vUZOrEpW3nuA7rr1XJXVgcycOjCI
+Oct 29 16:12:50 omkarvm sshd[4862]: pam_unix(sshd:session): session opened for user omkarubuntu(uid=1000) by omkarubuntu(uid=0)
+Oct 29 16:12:50 omkarvm sshd[4862]: pam_unix(sshd:session): session closed for user omkarubuntu
+Oct 29 16:13:09 omkarvm sshd[4926]: Connection closed by authenticating user omkarubuntu 192.168.50.10 port 42762 [preauth]
+Oct 29 16:13:09 omkarvm sshd[4928]: Accepted publickey for omkarubuntu from 192.168.50.10 port 42776 ssh2: ED25519 SHA256:iGGHBW/YI1gVGu+vUZOrEpW3nuA7rr1XJXVgcycOjCI
+Oct 29 16:13:09 omkarvm sshd[4928]: pam_unix(sshd:session): session opened for user omkarubuntu(uid=1000) by omkarubuntu(uid=0)
+Oct 29 16:13:09 omkarvm sshd[4928]: pam_unix(sshd:session): session closed for user omkarubuntu
+Oct 29 16:13:09 omkarvm sshd[4973]: Accepted publickey for omkarubuntu from 192.168.50.10 port 42784 ssh2: ED25519 SHA256:iGGHBW/YI1gVGu+vUZOrEpW3nuA7rr1XJXVgcycOjCI
+Oct 29 16:13:09 omkarvm sshd[4973]: pam_unix(sshd:session): session opened for user omkarubuntu(uid=1000) by omkarubuntu(uid=0)
+Oct 29 16:13:09 omkarvm sshd[4973]: pam_unix(sshd:session): session closed for user omkarubuntu
+-- Boot ba7617153de54e39be42ce6d669ad630 --
+Oct 29 16:46:04 omkarvm systemd[1]: Starting ssh.service - OpenBSD Secure Shell server...
+Oct 29 16:46:04 omkarvm sshd[1097]: Server listening on 0.0.0.0 port 22.
+Oct 29 16:46:04 omkarvm systemd[1]: Started ssh.service - OpenBSD Secure Shell server.
+Oct 29 16:46:04 omkarvm sshd[1097]: Server listening on :: port 22.
+-- Boot b15ccdeabdbe40fd8d14af6f22f7c759 --
+Oct 29 16:48:24 omkarvm systemd[1]: Starting ssh.service - OpenBSD Secure Shell server...
+Oct 29 16:48:24 omkarvm sshd[1093]: Server listening on 0.0.0.0 port 22.
+Oct 29 16:48:24 omkarvm sshd[1093]: Server listening on :: port 22.
+Oct 29 16:48:24 omkarvm systemd[1]: Started ssh.service - OpenBSD Secure Shell server.
+
+========== AUTHENTICATION EVENTS ==========

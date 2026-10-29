@@ -1,0 +1,16 @@
+NetSentry - Authentication Events
+Host: omkarvm
+Review window: 2026-10-28 through 2026-10-29
+Source: /var/log/auth.log
+
+2026-10-28T16:34:15.121949+05:30 omkarvm sshd[4468]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.50.10  user=omkarubuntu
+2026-10-28T16:34:17.105280+05:30 omkarvm sshd[4468]: Failed password for omkarubuntu from 192.168.50.10 port 54830 ssh2
+2026-10-28T16:34:26.465008+05:30 omkarvm sshd[4468]: Accepted password for omkarubuntu from 192.168.50.10 port 54830 ssh2
+2026-10-29T16:12:07.475396+05:30 omkarvm sshd[4775]: Connection closed by authenticating user omkarubuntu 192.168.50.10 port 52468 [preauth]
+2026-10-29T16:12:07.715129+05:30 omkarvm sshd[4777]: Connection closed by authenticating user omkarubuntu 192.168.50.10 port 52474 [preauth]
+2026-10-29T16:12:17.772997+05:30 omkarvm sshd[4779]: Accepted password for omkarubuntu from 192.168.50.10 port 52484 ssh2
+2026-10-29T16:13:09.080302+05:30 omkarvm sshd[4926]: Connection closed by authenticating user omkarubuntu 192.168.50.10 port 42762 [preauth]
+2026-10-29T16:46:20.707647+05:30 omkarvm gdm-password]: pam_unix(gdm-password:auth): authentication failure; logname= uid=0 euid=0 tty=/dev/tty1 ruser= rhost=  user=omkarubuntu
+2026-10-29T16:51:58.718638+05:30 omkarvm sudo: omkarubuntu : TTY=pts/0 ; PWD=/home/omkarubuntu ; USER=root ; COMMAND=/usr/bin/grep -E 'Failed password|Accepted password|Invalid user|preauth|Connection closed' /var/log/auth.log
+2026-10-29T16:52:58.817807+05:30 omkarvm sshd[3942]: Accepted password for omkarubuntu from 192.168.50.20 port 48460 ssh2
+2026-10-29T17:06:18.666190+05:30 omkarvm sudo: omkarubuntu : TTY=pts/0 ; PWD=/home/omkarubuntu ; USER=root ; COMMAND=/usr/bin/grep -a -E 'Failed password|Accepted password|Invalid user|preauth|Connection closed|authentication failure' /var/log/auth.log
