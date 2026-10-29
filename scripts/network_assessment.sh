@@ -7,7 +7,6 @@ set -u
 set -o pipefail
 
 TARGET="${1:-192.168.50.20}"
-LAB_PREFIX="192.168.50."
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
 
 # Accept only valid individual IPv4 targets in the lab subnet.
@@ -37,13 +36,18 @@ for tool in nmap ping timeout sha256sum; do
 done
 
 OUT_DIR="reports/runs/${TIMESTAMP}_${TARGET//./_}"
-mkdir -p "$OUT_DIR" || {
+
+if ! mkdir -p "$OUT_DIR"; then
     echo "ERROR: Could not create output directory."
     exit 2
-}
+fi
 
 REPORT="$OUT_DIR/assessment-summary.txt"
 SCAN="$OUT_DIR/tcp-scan.txt"
+
+SCAN_STATUS=0
+EVIDENCE_STATUS=0
+CHECKSUM_STATUS=0
 
 {
     echo "=================================================="
@@ -70,7 +74,6 @@ SCAN="$OUT_DIR/tcp-scan.txt"
 
     if timeout 120 nmap -sT -Pn -n -p 1-1000 --reason \
         -oN "$SCAN" "$TARGET"; then
-        SCAN_STATUS=0
         echo "Scan status: Completed."
     else
         SCAN_STATUS=$?
@@ -80,17 +83,25 @@ SCAN="$OUT_DIR/tcp-scan.txt"
     echo
     echo "----- SCAN OUTPUT -----"
     if [[ -f "$SCAN" ]]; then
-        cat "$SCAN"
+        if ! cat "$SCAN"; then
+            echo "ERROR: Could not read the scan-output file."
+            EVIDENCE_STATUS=1
+        fi
     else
-        echo "No Nmap output file was produced."
+        echo "ERROR: No Nmap output file was produced."
+        EVIDENCE_STATUS=1
     fi
 
     echo
     echo "----- EVIDENCE CHECKSUM -----"
     if [[ -f "$SCAN" ]]; then
-        sha256sum "$SCAN"
+        if ! sha256sum "$SCAN"; then
+            echo "ERROR: Could not generate the scan-output checksum."
+            CHECKSUM_STATUS=1
+        fi
     else
-        echo "Checksum unavailable: scan output file is missing."
+        echo "Checksum unavailable: scan-output file is missing."
+        CHECKSUM_STATUS=1
     fi
 
     echo
@@ -99,15 +110,23 @@ SCAN="$OUT_DIR/tcp-scan.txt"
 } > "$REPORT" 2>&1
 
 REPORT_STATUS=$?
-cat "$REPORT"
 
 if (( REPORT_STATUS != 0 )); then
     echo "ERROR: Could not complete report generation."
     exit 1
 fi
 
+if ! cat "$REPORT"; then
+    echo "ERROR: Could not display the assessment report."
+    exit 1
+fi
+
 if (( SCAN_STATUS != 0 )); then
     exit "$SCAN_STATUS"
+fi
+
+if (( EVIDENCE_STATUS != 0 || CHECKSUM_STATUS != 0 )); then
+    exit 1
 fi
 
 exit 0
