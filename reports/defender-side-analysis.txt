@@ -1,123 +1,105 @@
-==================================================
-       NETSENTRY DEFENDER-SIDE ANALYSIS
-==================================================
+# NetSentry — Defender-Side Analysis
 
-Assessment date: 28 October 2026
-Scanner: Kali Linux (192.168.50.10)
-Target: Ubuntu 24.04.5 (192.168.50.20)
-Lab network: NetSentry-Lab (192.168.50.0/24)
+**Assessment date:** 28 October 2026  
+**Scanner:** Kali Linux (`192.168.50.10`)  
+**Target:** Ubuntu 24.04.5 (`192.168.50.20`)  
+**Lab network:** NetSentry-Lab (`192.168.50.0/24`)
 
-1. OBJECTIVE
-------------
-Compare a controlled TCP SYN scan with packet-level
-evidence collected on the target machine, then review
-available SSH and authentication logs.
+## 1. Objective
 
-2. SCAN DETAILS
----------------
-Tool: Nmap 7.94SVN
-Scan type: TCP SYN scan (-sS)
-Port range: TCP 1-1000
-Target: 192.168.50.20
+Compare a controlled TCP SYN scan with packet-level evidence collected on the target machine, then review the available SSH and authentication logs.
 
-A SYN scan sends an initial TCP SYN probe and uses the
-response to classify a port. It normally does not
-complete the TCP handshake.
+## 2. Scan Details
 
-The repeatable assessment script uses a TCP connect
-scan (-sT), which asks the operating system to establish
-a full TCP connection. These are separate assessments.
+- **Tool:** Nmap 7.94SVN
+- **Scan type:** TCP SYN scan (`-sS`)
+- **Port range:** TCP 1–1000
+- **Target:** `192.168.50.20`
 
-3. RESULTS
-----------
-Host status: Up
-Ports scanned: 1000 TCP ports
-Open ports: 1
-Closed ports: 999
-Open service: TCP/22 (SSH)
+A SYN scan sends an initial TCP SYN probe and uses the response to classify a port. It normally does not complete the TCP handshake.
 
-Nmap results and the target-side capture agree that
-TCP/22 was open during this assessment.
+The repeatable assessment script uses a TCP connect scan (`-sT`), which asks the operating system to establish a TCP connection. These are separate assessments and use different scan methods.
 
-4. DEFENDER-SIDE OBSERVATIONS
------------------------------
-The Ubuntu capture contains TCP SYN probes from
-192.168.50.10 to 192.168.50.20.
+## 3. Results
+
+- **Host status:** Up
+- **TCP ports scanned:** 1,000
+- **Open ports:** 1
+- **Closed ports:** 999
+- **Open service:** TCP/22 (SSH)
+
+The Nmap results and target-side capture agree that TCP/22 was open during this assessment.
+
+## 4. Defender-Side Observations
+
+The Ubuntu capture contains TCP SYN probes from `192.168.50.10` to `192.168.50.20`.
 
 Observed response patterns include:
 
 - SYN-ACK from TCP/22, indicating an open port.
 - RST-ACK responses from closed TCP ports.
-- A reset from the scanner after the SYN-ACK on
-  TCP/22, consistent with SYN-scan behaviour.
+- A reset from the scanner after the SYN-ACK on TCP/22, consistent with SYN-scan behaviour.
 
-The capture contains 2,001 packets and spans
-approximately 31.9 milliseconds.
+The capture contains 2,001 packets and spans approximately 31.9 milliseconds.
 
-5. AUTHENTICATION LOG REVIEW
-----------------------------
-The saved authentication evidence covers
-28-29 October 2026.
+## 5. Authentication Log Review
+
+The saved authentication evidence covers selected events from 27–29 October 2026.
 
 Relevant files:
-- evidence/auth-log-review.txt
-- evidence/auth-log-events.txt
 
-The logs include failed and successful password
-authentication events from 192.168.50.10 on
-28 October, as well as pre-authentication connection
-closures and a successful password login from that
-address on 29 October.
+- `evidence/auth-log-review.txt`
+- `evidence/auth-log-events.txt`
 
-The reviewed events are not, by themselves, proof of
-malicious activity. The available timestamps do not
-establish that these authentication events were caused
-by the 28 October SYN scan.
+The reviewed records include:
 
-A SYN scan normally does not proceed to SSH user
-authentication. Network packet evidence and
-authentication logs therefore need to be interpreted
-in the context of the specific test and its timing.
+- An intentional invalid-username SSH test from the lab scanner on 27 October.
+- A failed password attempt followed by a successful password login from `192.168.50.10` on 28 October.
+- Intentional password and public-key authentication tests from that address on 29 October.
 
-6. FINDINGS AND RECOMMENDATIONS
--------------------------------
+The 28 October password test occurred at approximately 16:34, around ten minutes after the 16:24 SYN scan. It was a separate intentional test, not evidence that the SYN scan caused an SSH login attempt.
 
-Finding 1 — Informational: SSH is reachable.
-Evidence: Nmap report and target-side packet capture.
-Interpretation: TCP/22 was reachable from the scanner.
-This result alone does not establish a vulnerability.
-Recommendation: Keep SSH enabled only where required
-and restrict access to trusted sources where practical.
+The available records do not establish that the authentication events were caused by the recorded SYN scan. A SYN scan normally does not proceed to SSH user authentication.
 
-Finding 2 — Informational: Closed ports returned resets.
-Evidence: Target-side packet capture.
-Interpretation: The target rejected connection probes
-to the ports classified as closed. This is an observed
-TCP response, not a vulnerability by itself.
-Recommendation: Compare remote scan results with local
-listening sockets and firewall rules.
+These events demonstrate why packet captures and authentication logs need to be interpreted in the context of the specific test, its timing, and the available evidence. The reviewed log excerpts are not intended to represent every authentication event on the target.
 
-Finding 3 — Informational: Network and authentication
-logs show different aspects of activity.
-Evidence: Packet capture, evidence/auth-log-review.txt,
-and evidence/auth-log-events.txt.
-Interpretation: The logs contain authentication and
-pre-authentication events from the lab scanner. The
-available evidence does not establish that these events
-were caused by the recorded SYN scan.
-Recommendation: Correlate timestamps and test steps
-before attributing host events to a network scan.
+## 6. Findings and Recommendations
 
-7. EVIDENCE FILES
------------------
-evidence/defender-tcp-scan.txt
-evidence/defender-scan-capture.pcap
-evidence/auth-log-review.txt
-evidence/auth-log-events.txt
+### Finding 1 — Informational: SSH is reachable
 
-Capture SHA-256:
-3840edec0113f107dcd0ceba1de50c3542eaecaa1ab66e98675f5cbe173e902b
+**Evidence:** Nmap report and target-side packet capture.
 
-==================================================
-END OF ANALYSIS
-==================================================
+**Interpretation:** TCP/22 was reachable from the scanner. This result alone does not establish a vulnerability.
+
+**Recommendation:** Keep SSH enabled only where required and restrict access to trusted sources where practical.
+
+### Finding 2 — Informational: Closed ports returned resets
+
+**Evidence:** Target-side packet capture.
+
+**Interpretation:** The target returned reset responses for ports classified as closed. This is an observed TCP response, not a vulnerability by itself.
+
+**Recommendation:** Compare remote scan results with local listening sockets and firewall rules.
+
+### Finding 3 — Informational: Network and authentication logs show different aspects of activity
+
+**Evidence:** Packet capture, `evidence/auth-log-review.txt`, and `evidence/auth-log-events.txt`.
+
+**Interpretation:** The reviewed records contain connection, authentication, and pre-authentication events from the lab scanner. The available evidence does not establish that these events were caused by the recorded SYN scan. The password and public-key tests were separate intentional lab activities.
+
+**Recommendation:** Correlate timestamps and test steps before attributing host events to a network scan.
+
+## 7. Evidence Files
+
+- `evidence/defender-tcp-scan.txt`
+- `evidence/defender-scan-capture.pcap`
+- `evidence/auth-log-review.txt`
+- `evidence/auth-log-events.txt`
+
+**Capture SHA-256:**
+
+`3840edec0113f107dcd0ceba1de50c3542eaecaa1ab66e98675f5cbe173e902b`
+
+---
+
+**End of Analysis**
