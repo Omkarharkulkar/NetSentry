@@ -1,16 +1,67 @@
-NetSentry - Authentication Events
+NetSentry - SSH Authentication Events
 Host: omkarvm
-Review window: 2026-10-28 through 2026-10-29
-Source: /var/log/auth.log
+Source: Ubuntu SSH journal and /var/log/auth.log
+Review window: 2026-10-27 through 2026-10-29
+Scanner: 192.168.50.10
 
-2026-10-28T16:34:15.121949+05:30 omkarvm sshd[4468]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.50.10  user=omkarubuntu
-2026-10-28T16:34:17.105280+05:30 omkarvm sshd[4468]: Failed password for omkarubuntu from 192.168.50.10 port 54830 ssh2
-2026-10-28T16:34:26.465008+05:30 omkarvm sshd[4468]: Accepted password for omkarubuntu from 192.168.50.10 port 54830 ssh2
-2026-10-29T16:12:07.475396+05:30 omkarvm sshd[4775]: Connection closed by authenticating user omkarubuntu 192.168.50.10 port 52468 [preauth]
-2026-10-29T16:12:07.715129+05:30 omkarvm sshd[4777]: Connection closed by authenticating user omkarubuntu 192.168.50.10 port 52474 [preauth]
-2026-10-29T16:12:17.772997+05:30 omkarvm sshd[4779]: Accepted password for omkarubuntu from 192.168.50.10 port 52484 ssh2
-2026-10-29T16:13:09.080302+05:30 omkarvm sshd[4926]: Connection closed by authenticating user omkarubuntu 192.168.50.10 port 42762 [preauth]
-2026-10-29T16:46:20.707647+05:30 omkarvm gdm-password]: pam_unix(gdm-password:auth): authentication failure; logname= uid=0 euid=0 tty=/dev/tty1 ruser= rhost=  user=omkarubuntu
-2026-10-29T16:51:58.718638+05:30 omkarvm sudo: omkarubuntu : TTY=pts/0 ; PWD=/home/omkarubuntu ; USER=root ; COMMAND=/usr/bin/grep -E 'Failed password|Accepted password|Invalid user|preauth|Connection closed' /var/log/auth.log
-2026-10-29T16:52:58.817807+05:30 omkarvm sshd[3942]: Accepted password for omkarubuntu from 192.168.50.20 port 48460 ssh2
-2026-10-29T17:06:18.666190+05:30 omkarvm sudo: omkarubuntu : TTY=pts/0 ; PWD=/home/omkarubuntu ; USER=root ; COMMAND=/usr/bin/grep -a -E 'Failed password|Accepted password|Invalid user|preauth|Connection closed|authentication failure' /var/log/auth.log
+========== OCTOBER 27: SSH SERVICE TESTING ==========
+
+16:25:46 - Connection closed by 192.168.50.10 port 40206.
+16:26:11 - Connection closed by 192.168.50.10 port 55170.
+16:28:38 - Connection closed by 192.168.50.10 port 35268.
+16:31:38 - Connection closed by 192.168.50.10 port 42928.
+16:32:06 - Connection closed by 192.168.50.10 port 47160.
+
+The 16:28:38 connection event aligns with the SSH service scan, and
+the 16:32:06 event aligns with the full TCP scan. The other connection
+events are recorded as observed network activity. None of these entries
+shows successful authentication.
+
+16:40:22 - Invalid user invaliduser from 192.168.50.10 port 33230.
+16:40:22 - Connection closed by invalid user invaliduser [preauth].
+
+This was an intentional invalid-username test.
+
+========== OCTOBER 28: SYN SCAN AND PASSWORD TEST ==========
+
+16:24:07 - Kali SYN scan started against TCP ports 1-1000.
+           No corresponding SSH authentication event appears in the
+           available logs for this scan.
+
+16:34:15 - Authentication failure for omkarubuntu from 192.168.50.10.
+16:34:17 - Failed password for omkarubuntu from 192.168.50.10 port 54830.
+16:34:26 - Accepted password for omkarubuntu from 192.168.50.10 port 54830.
+16:34:26 - SSH session opened.
+16:34:27 - SSH session closed.
+
+This was a separate intentional password-authentication test,
+approximately ten minutes after the SYN scan.
+
+========== OCTOBER 29: PASSWORD AND PUBLIC-KEY TESTING ==========
+
+16:12:07 - Two SSH connections closed during pre-authentication
+           from 192.168.50.10.
+16:12:17 - Accepted password for omkarubuntu from 192.168.50.10.
+16:12:18 - SSH session closed.
+
+16:12:50 - Accepted public key for omkarubuntu from 192.168.50.10.
+           SSH session opened and closed.
+
+16:13:09 - One pre-authentication connection closed.
+16:13:09 - Two separate public-key authentications succeeded
+           from 192.168.50.10.
+           Both SSH sessions opened and closed.
+
+These were intentional password and public-key authentication tests.
+
+========== ANALYSIS NOTES ==========
+
+- TCP connection events do not necessarily indicate authentication attempts.
+- SSH service detection can create connection events without a login.
+- The October 28 SYN scan has no corresponding SSH authentication event
+  in the available records.
+- The October 28 password events occurred approximately ten minutes
+  after the SYN scan and are documented as a separate test.
+- October 29 public-key events demonstrate successful key-based
+  authentication from the Kali lab machine.
+- Findings are limited to the available journal and authentication logs.

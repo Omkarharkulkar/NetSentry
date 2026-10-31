@@ -48,5 +48,3 @@ Oct 29 16:48:24 omkarvm systemd[1]: Starting ssh.service - OpenBSD Secure Shell 
 Oct 29 16:48:24 omkarvm sshd[1093]: Server listening on 0.0.0.0 port 22.
 Oct 29 16:48:24 omkarvm sshd[1093]: Server listening on :: port 22.
 Oct 29 16:48:24 omkarvm systemd[1]: Started ssh.service - OpenBSD Secure Shell server.
-
-========== AUTHENTICATION EVENTS ==========
