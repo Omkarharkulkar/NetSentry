@@ -115,43 +115,49 @@ Nmap reported one open port, TCP/22, and 999 closed ports. The packet capture co
 | SYN-ACK from TCP/22 | Indicates that the SSH port was accepting TCP connection requests. |
 | RST-ACK responses from closed ports | Indicates that the target rejected connection attempts on those ports. |
 | Reset from Kali after the SYN-ACK | Consistent with SYN-scan behaviour rather than a completed TCP connection. |
-| SSH authentication events | Failed and successful password-authentication events were recorded, but they cannot be conclusively attributed to the SYN scan. |
+| SSH authentication events | Failed and successful password and public-key authentication events were recorded during separate lab tests; they cannot be conclusively attributed to the SYN scan. |
 
 An important takeaway from this exercise is that packet captures and authentication logs show different parts of network activity. A packet capture can reveal connection probes and responses, while authentication logs can record attempts to authenticate to a service.
 
-The reviewed logs contained SSH authentication events, but the available evidence did not establish that those events were caused by the recorded SYN scan.
+The reviewed logs contained SSH connection and authentication events across October 27–29. These included an intentional invalid-username test on October 27, a password authentication test on October 28, and password and public-key authentication tests on October 29.
 
-Similarly, not finding a corresponding authentication event in the reviewed log output does not mean the activity was invisible to every host or network monitoring mechanism.
+The October 28 password test took place approximately ten minutes after the SYN scan. It was a separate intentional test, not an authentication event established to have been caused by the scan.
+
+The available evidence does not establish that the recorded authentication events were caused by the October 28 SYN scan. Network and host evidence therefore need to be interpreted in their respective timelines and contexts.
+
+The absence of a corresponding authentication event for a network scan does not mean that the activity was invisible to every host or network monitoring mechanism.
 
 ## Findings and Recommendations
 
-### Finding 1: SSH is reachable on the lab interface
+### Finding 1 — Informational: SSH is reachable on the lab interface
 
 **Evidence:** Nmap scan results and the defender-side packet capture.
 
 **Recommendation:** Keep SSH enabled only where needed and restrict access to trusted sources where practical.
 
-### Finding 2: Closed ports returned TCP reset responses
+### Finding 2 — Informational: Closed ports returned TCP reset responses
 
-**Evidence:** The packet capture collected on the Ubuntu target.
+**Evidence:** The target-side packet capture.
 
 **Recommendation:** Compare remote scan results with local listening sockets and applicable firewall rules to understand which services are actually exposed.
 
-### Finding 3: Network evidence and authentication logs provide different views
+### Finding 3 — Informational: Network evidence and authentication logs provide different views
 
-**Evidence:** TCP probes and responses were captured, while no corresponding SSH authentication event was observed in the reviewed logs.
+**Evidence:** The reviewed SSH journal and authentication log contain connection events, an intentional invalid-username test on October 27, and intentional password and public-key authentication tests on October 28 and 29.
+
+**Interpretation:** These events show why network and host logs need to be considered separately. The available evidence does not establish that the authentication events were caused by the October 28 SYN scan.
 
 **Recommendation:** Correlate network and host evidence when investigating scanning or connection activity. Review the relevant log sources and time ranges before drawing conclusions.
 
-### Finding 4: The repeatable assessment identified one open TCP port in the scanned range
+### Finding 4 — Informational: The repeatable assessment identified one open TCP port in the scanned range
 
-**Evidence:** The October 29, 2026 assessment of `192.168.50.20` reported TCP/22 open and 999 other TCP ports closed across ports 1–1000. The saved scan output and its SHA-256 checksum are available in the generated assessment report.
+**Evidence:** The October 28, 2026 sample assessment of `192.168.50.20` reported TCP/22 open and 999 other TCP ports closed across ports 1–1000. The saved sample scan output and its SHA-256 checksum are available in the sample assessment report.
 
 **Interpretation:** SSH was reachable during this assessment. These results do not establish whether the service is vulnerable, whether its configuration is secure, or what services may exist outside the scanned range.
 
 **Recommendation:** Review the SSH configuration and access requirements on the Ubuntu target. If further assessment is needed, document the scope and compare the results before and after any controlled configuration change.
 
-These findings come from controlled lab exercises. They are observations to investigate and learn from, not proof of malicious activity or a confirmed vulnerability.
+These are observations from controlled lab exercises, not proof of malicious activity or a confirmed vulnerability. The severity labels are descriptive assessment classifications, not CVSS scores.
 
 ## Repository Structure
 
@@ -162,7 +168,9 @@ NetSentry/
 │   ├── ssh-service-scan.txt
 │   ├── netsentry-lab-traffic.pcapng
 │   ├── defender-tcp-scan.txt
-│   └── defender-scan-capture.pcap
+│   ├── defender-scan-capture.pcap
+│   ├── auth-log-review.txt
+│   └── auth-log-events.txt
 ├── reports/
 │   ├── initial-assessment-report.txt
 │   ├── defender-side-analysis.txt
@@ -240,4 +248,3 @@ There are several areas I plan to explore to build on the current lab:
 - Add a structured assessment report covering severity, evidence, impact, and remediation.
 - Explore additional authorised network troubleshooting scenarios.
 - Document the assessment script's failure-handling tests and their results.
-
