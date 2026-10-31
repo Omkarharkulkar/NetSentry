@@ -172,8 +172,8 @@ NetSentry/
 │   ├── auth-log-review.txt
 │   └── auth-log-events.txt
 ├── reports/
-│   ├── initial-assessment-report.txt
-│   ├── defender-side-analysis.txt
+│   ├── initial-assessment-report.md
+│   ├── defender-side-analysis.md
 │   ├── sample-run/
 │   │   ├── assessment-summary.txt
 │   │   └── tcp-scan.txt
