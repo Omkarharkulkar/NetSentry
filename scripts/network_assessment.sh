@@ -48,8 +48,9 @@ SCAN="$OUT_DIR/tcp-scan.txt"
 SCAN_STATUS=0
 EVIDENCE_STATUS=0
 CHECKSUM_STATUS=0
+REPORT_STATUS=0
 
-{
+if {
     echo "=================================================="
     echo "          NETSENTRY NETWORK ASSESSMENT"
     echo "=================================================="
@@ -107,9 +108,11 @@ CHECKSUM_STATUS=0
     echo
     echo "Report directory: $OUT_DIR"
     echo "=================================================="
-} > "$REPORT" 2>&1
-
-REPORT_STATUS=$?
+} > "$REPORT" 2>&1; then
+     :
+else
+     REPORT_STATUS=1
+fi
 
 if (( REPORT_STATUS != 0 )); then
     echo "ERROR: Could not complete report generation."
