@@ -44,7 +44,7 @@ The capture contains 2,001 packets and spans approximately 31.9 milliseconds.
 
 ## 5. Authentication Log Review
 
-The saved authentication evidence covers selected events from 27–29 October 2026.
+The saved authentication evidence covers selected events from 28–29 October 2026.
 
 Relevant files:
 
@@ -53,7 +53,6 @@ Relevant files:
 
 The reviewed records include:
 
-- An intentional invalid-username SSH test from the lab scanner on 27 October.
 - A failed password attempt followed by a successful password login from `192.168.50.10` on 28 October.
 - Intentional password and public-key authentication tests from that address on 29 October.
 
@@ -103,3 +102,5 @@ These events demonstrate why packet captures and authentication logs need to be 
 ---
 
 **End of Analysis**
+
+Log records from 27 October were no longer available on the VM, so the version-detection scans from that date could not be compared against host authentication logs.

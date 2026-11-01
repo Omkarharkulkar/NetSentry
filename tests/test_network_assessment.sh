@@ -23,6 +23,7 @@ MOCK_NMAP_MARKER="$TEST_DIR/nmap-called"
 mkdir -p "$MOCK_BIN" "$WORK_DIR"
 export MOCK_NMAP_MARKER
 
+# shellcheck disable=SC2329
 cleanup() {
     rm -rf "$TEST_DIR"
 }
