@@ -119,7 +119,7 @@ Nmap reported one open port, TCP/22, and 999 closed ports. The packet capture co
 
 An important takeaway from this exercise is that packet captures and authentication logs show different parts of network activity. A packet capture can reveal connection probes and responses, while authentication logs can record attempts to authenticate to a service.
 
-The reviewed logs contained SSH connection and authentication events across October 27–29. These included an intentional invalid-username test on October 27, a password authentication test on October 28, and password and public-key authentication tests on October 29.
+The reviewed logs contained SSH connection and authentication events across October 28–29. These included a password authentication test on October 28 and password and public-key authentication tests on October 29.
 
 The October 28 password test took place approximately ten minutes after the SYN scan. It was a separate intentional test, not an authentication event established to have been caused by the scan.
 
@@ -143,7 +143,7 @@ The absence of a corresponding authentication event for a network scan does not 
 
 ### Finding 3 — Informational: Network evidence and authentication logs provide different views
 
-**Evidence:** The reviewed SSH journal and authentication log contain connection events, an intentional invalid-username test on October 27, and intentional password and public-key authentication tests on October 28 and 29.
+**Evidence:** The reviewed SSH journal and authentication log contain connection events and intentional password and public-key authentication tests on October 28 and 29.
 
 **Interpretation:** These events show why network and host logs need to be considered separately. The available evidence does not establish that the authentication events were caused by the October 28 SYN scan.
 
